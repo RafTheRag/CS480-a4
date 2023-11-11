@@ -10,8 +10,12 @@
 #include <fstream>
 #include "report.h"
 #include "tradecrypto.h"
+#include "producers.h"
+#include "consumers.h"
+#include "btcproducer.h"
 
 using namespace std;
+
 int main(int argc, char** argv) {
     //checks if there is valid amount of mandatory arguements in the command line
     if (argc < 3) {
@@ -62,8 +66,22 @@ int main(int argc, char** argv) {
         }
     }
 
+    pthread_t producers[2];
+    pthread_t consumers[2];
 
-    cout << msToProduceETH << endl;
+    pthread_create(&producers[0], NULL, bitcoin_producer, NULL);
+    pthread_create(&producers[1], NULL, ethereum_producer, NULL);
+    pthread_create(&consumers[0], NULL, blockchain_x_consumer, NULL);
+    pthread_create(&consumers[1], NULL, blockchain_y_consumer, NULL);
+
+    // Wait for producer threads to finish
+    pthread_join(producers[0], NULL);
+    pthread_join(producers[1], NULL);
+
+    // Wait for consumer threads to finish
+    pthread_join(consumers[0], NULL);
+    pthread_join(consumers[1], NULL);
+
 
     exit(0);
 
