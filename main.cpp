@@ -12,7 +12,7 @@
 #include "tradecrypto.h"
 #include "producers.h"
 #include "consumers.h"
-#include "btcproducer.h"
+#include "monitor.h"
 
 using namespace std;
 
@@ -21,58 +21,56 @@ int main(int argc, char** argv) {
     if (argc < 3) {
         throw invalid_argument("Invalid num of arguements");
     }
-   
-
+    
     int option = 0;
     
-    int numOfTradeRequests = 120;
-    int msForX = 0;
-    int msForY = 0;
-    int msToProduceBTC = 0;
-    int msToProduceETH = 0;
+    ProducerConsumerMonitor monitorData;
+    
 
     while ((option = getopt(argc, argv, "n:x:y:b:e:")) != -1) {
         switch (option) {
             
             case 'n':
-                numOfTradeRequests = atoi(optarg);
+                monitorData.numOfTradeRequests = atoi(optarg);
                 //checks if numOfProgressMarks is greater than 10 to run
-                if (numOfTradeRequests < 0){
+                if (monitorData.numOfTradeRequests < 0){
                     cerr << "Number of trade requests must be atleast 1" << endl;
                     exit(EXIT_FAILURE);
                 }
                 break;
 
             case 'x':
-                msForX = atoi(optarg);                
+                monitorData.msForX = atoi(optarg);                
                 break;
 
             case 'y':
-                msForY = atoi(optarg);
+                monitorData.msForY = atoi(optarg);
                 break;
 
             case 'b':
-                msToProduceBTC = atoi(optarg);
+                monitorData.msToProduceBTC = atoi(optarg);
                 break;
 
             case 'e':
-                msToProduceETH = atoi(optarg);
+                monitorData.msToProduceETH = atoi(optarg);
                 break;
 
 
             default:
-                cout << "Usage: " << argv[0] << "[-n numOfTradeRequests] [-x msForX] [-y msForY] [-b msToProduceBTC] [-e msToProduceETH]" << endl;
+                cout << "Usage: " << argv[0] << " [-n numOfTradeRequests] [-x msForX] [-y msForY] [-b msToProduceBTC] [-e msToProduceETH]" << endl;
                 exit(1);
         }
     }
 
+    sem_init(&monitorData.barrier_sem, 0, 0);
+
     pthread_t producers[2];
     pthread_t consumers[2];
 
-    pthread_create(&producers[0], NULL, bitcoin_producer, NULL);
-    pthread_create(&producers[1], NULL, ethereum_producer, NULL);
-    pthread_create(&consumers[0], NULL, blockchain_x_consumer, NULL);
-    pthread_create(&consumers[1], NULL, blockchain_y_consumer, NULL);
+    pthread_create(&producers[0], NULL, &bitcoin_producer, (void*)&monitorData);
+    pthread_create(&producers[1], NULL, &ethereum_producer, (void*)&monitorData);
+    pthread_create(&consumers[0], NULL, &blockchain_x_consumer, (void*)&monitorData);
+    pthread_create(&consumers[1], NULL, &blockchain_y_consumer, (void*)&monitorData);
 
     // Wait for producer threads to finish
     pthread_join(producers[0], NULL);
