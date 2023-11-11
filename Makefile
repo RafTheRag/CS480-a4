@@ -11,7 +11,7 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall -g3 -c
 
 # object files
-OBJS = main.o report.o btcproducer.o ethproducer.o consumerx.o consumery.o producers.o consumers.o
+OBJS = main.o report.o btcproducer.o ethproducer.o consumerx.o consumery.o producers.o consumers.o monitor.o 
 
 # Program name
 PROGRAM = tradecrypto
@@ -46,6 +46,9 @@ producers.o : producers.cpp producers.h
 
 consumers.o : consumers.cpp consumers.h
 	$(CXX) $(CXXFLAGS) consumers.cpp
+
+monitor.o : monitor.cpp monitor.h
+	$(CXX) $(CXXFLAGS) monitor.cpp
 
 clean :
 	rm -f *.o $(PROGRAM)
