@@ -8,10 +8,10 @@
 class ProducerConsumerMonitor{
     public:
         sem_t barrier_sem;
-        pthread_mutex_t mutex;          // Mutex for protecting critical sections
+        pthread_mutex_t queue_mutex;          // Mutex for protecting critical sections
         pthread_cond_t unconsumed;      // Condition variable for signaling unconsumed items
         pthread_cond_t availableSlots;   // Condition variable for signaling available slots
-        
+        int capacity = 15;
         std::queue<int> brokerQueue;
         
         unsigned int numOfTradeRequests = 120;

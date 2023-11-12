@@ -13,7 +13,11 @@ void* bitcoin_producer(void* arg) {
 
     ProducerConsumerMonitor *monitor = (ProducerConsumerMonitor*)arg;
 
+    usleep(monitor->msToProduceBTC);
+
     
+    RequestType request = Bitcoin;
+
 
 
    pthread_exit(NULL);
@@ -24,6 +28,10 @@ void* ethereum_producer(void* arg) {
     // ...
 
     ProducerConsumerMonitor *monitor = (ProducerConsumerMonitor*)arg;
+
+    usleep(monitor->msToProduceETH);
+
+    RequestType request = Ethereum;
 
     pthread_exit(NULL);
 }
