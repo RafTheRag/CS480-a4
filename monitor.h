@@ -7,10 +7,10 @@
 #include "tradecrypto.h"  // Include the necessary structures
 class ProducerConsumerMonitor{
     public:
-        sem_t barrier_sem;
-        pthread_mutex_t queue_mutex;          // Mutex for protecting critical sections
-        pthread_cond_t unconsumed;      // Condition variable for signaling unconsumed items
-        pthread_cond_t availableSlots;   // Condition variable for signaling available slots
+        sem_t barrierSem;
+        pthread_mutex_t queueMutex;          // Mutex for protecting critical sections
+        pthread_cond_t notEmpty;      // Condition variable for signaling unconsumed items
+        pthread_cond_t notFull;   // Condition variable for signaling available slots
         int capacity = 15;
         std::queue<int> brokerQueue;
         

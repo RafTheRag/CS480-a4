@@ -2,28 +2,29 @@
 #include <iostream>
 #include "monitor.h"
 
+
 void ProducerConsumerMonitor::insert(RequestType type){
-    pthread_mutex_lock(&queue_mutex);
+    pthread_mutex_lock(&queueMutex);
 
     while (brokerQueue.size() == capacity) {
-        pthread_cond_wait(&notFull, &queue_mutex); 
+        pthread_cond_wait(&notFull, &queueMutex); 
     }
     brokerQueue.push(type);
     pthread_cond_signal(&notEmpty);
 
-    pthread_mutex_unlock(&queue_mutex);
+    pthread_mutex_unlock(&queueMutex);
 }
 
 void ProducerConsumerMonitor::remove(RequestType type){
-    pthread_mutex_lock(&mutex);
+    pthread_mutex_lock(&queueMutex);
 
-        while (queue.empty()) {
-            pthread_cond_wait(&notEmpty, &queue_mutex);
+        while (brokerQueue.empty()) {
+            pthread_cond_wait(&notEmpty, &queueMutex);
         }
-        T item = queue.pop();
+        RequestType item = brokerQueue.pop();
         pthread_cond_signal(&notFull);
        
-        pthread_mutex_unlock(&mutex);
+        pthread_mutex_unlock(&queueMutex);
         return item;
     
 
