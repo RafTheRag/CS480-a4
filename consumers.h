@@ -5,6 +5,7 @@
 #ifndef CONSUMERS_H
 #define CONSUMERS_H
 #include <pthread.h>
+#include "report.h"
 
 void* blockchain_x_consumer(void* arg);
 
