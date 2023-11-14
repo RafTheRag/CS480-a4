@@ -66,6 +66,9 @@ int main(int argc, char** argv) {
 
     pthread_t producers[2];
     pthread_t consumers[2];
+    pthread_mutex_init(&monitorData.queueMutex, NULL);
+    pthread_cond_init(&monitorData.notEmpty, NULL);
+    pthread_cond_init(&monitorData.notFull, NULL);
 
     pthread_create(&producers[0], NULL, &bitcoin_producer, (void*)&monitorData);
     pthread_create(&producers[1], NULL, &ethereum_producer, (void*)&monitorData);

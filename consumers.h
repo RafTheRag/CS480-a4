@@ -7,6 +7,7 @@
 #include <pthread.h>
 #include "report.h"
 
+
 void* blockchain_x_consumer(void* arg);
 
 void* blockchain_y_consumer(void* arg);

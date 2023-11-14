@@ -13,7 +13,7 @@ void* blockchain_x_consumer(void* arg) {
 
     unsigned int consumed[RequestTypeN] = {0, 0};
     
-    // while(true){
+    while(monitor->totalConsumed < monitor->numOfTradeRequests){
         usleep(monitor->msForX);
         RequestType coinType = monitor->brokerQueue.front();
         RequestType currType = monitor->remove(coinType);
@@ -27,10 +27,7 @@ void* blockchain_x_consumer(void* arg) {
 
         report_request_removed(BlockchainX, currType, consumed, monitor->inRequestQueue);
 
-    //     if (monitor->totalConsumed == monitor->numOfTradeRequests){
-    //         break;
-    //     }
-    // }
+    }
     
     pthread_exit(NULL);
 }
@@ -42,7 +39,7 @@ void* blockchain_y_consumer(void* arg) {
 
     unsigned int consumed[RequestTypeN] = {0, 0};
 
-    // while(true){
+    while(monitor->totalConsumed < monitor->numOfTradeRequests){
         usleep(monitor->msForY);
         RequestType coinType = monitor->brokerQueue.front();
         RequestType currType = monitor->remove(coinType);
@@ -56,12 +53,8 @@ void* blockchain_y_consumer(void* arg) {
 
         report_request_removed(BlockchainY, currType, consumed, monitor->inRequestQueue);
 
-    //     if (monitor->totalConsumed == monitor->numOfTradeRequests){
-    //         break;
-    //     }
-    // }
+    }
     
 
     pthread_exit(NULL);
 }
-
