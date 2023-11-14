@@ -15,7 +15,7 @@ void ProducerConsumerMonitor::insert(RequestType type){
     pthread_mutex_unlock(&queueMutex);
 }
 
-void ProducerConsumerMonitor::remove(RequestType type){
+/*void ProducerConsumerMonitor::remove(RequestType type){
     pthread_mutex_lock(&queueMutex);
 
         while (brokerQueue.empty()) {
@@ -29,4 +29,4 @@ void ProducerConsumerMonitor::remove(RequestType type){
     
 
 
-}
+}*/

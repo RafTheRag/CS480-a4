@@ -8,30 +8,36 @@
 
 
 void* bitcoin_producer(void* arg) {
-    // Bitcoin producer logic
-    // ...
 
     ProducerConsumerMonitor *monitor = (ProducerConsumerMonitor*)arg;
 
-    usleep(monitor->msToProduceBTC);
-
-    
     RequestType request = Bitcoin;
 
+    while(true){
 
+        usleep(monitor->msToProduceBTC);
+
+        monitor->brokerQueue.push(request);
+        monitor->btcCount++;
+        monitor->currentCount++;
+    }
 
    pthread_exit(NULL);
 }
 
 void* ethereum_producer(void* arg) {
-    // Ethereum producer logic
-    // ...
-
+    
     ProducerConsumerMonitor *monitor = (ProducerConsumerMonitor*)arg;
 
-    usleep(monitor->msToProduceETH);
-
     RequestType request = Ethereum;
+
+    while(true){
+
+        usleep(monitor->msToProduceETH);
+        
+        monitor->brokerQueue.push(request);
+        monitor->currentCount++;
+    }
 
     pthread_exit(NULL);
 }

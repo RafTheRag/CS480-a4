@@ -19,6 +19,8 @@ class ProducerConsumerMonitor{
         unsigned int msForY = 0;
         unsigned int msToProduceBTC = 0;
         unsigned int msToProduceETH = 0;
+        unsigned int currentCount = 0;
+        unsigned int btcCount = 0;
 
         void insert(RequestType type);
         void remove(RequestType type);
