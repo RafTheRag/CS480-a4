@@ -19,7 +19,7 @@ void* bitcoin_producer(void* arg) {
 
     
 
-    while(true){
+    // while(true){
 
         usleep(monitor->msToProduceBTC * 1000);
 
@@ -33,12 +33,12 @@ void* bitcoin_producer(void* arg) {
         
         report_request_added(request, monitor->produced, monitor->inRequestQueue);
 
-        if (monitor->produced[Bitcoin] + monitor->produced[Ethereum] == monitor->numOfTradeRequests){
-            break;
-        }
+    //     if (monitor->produced[Bitcoin] + monitor->produced[Ethereum] == monitor->numOfTradeRequests){
+    //         break;
+    //     }
 
         
-    }
+    // }
 
    pthread_exit(NULL);
 }
@@ -51,7 +51,7 @@ void* ethereum_producer(void* arg) {
 
     // unsigned int produced[RequestTypeN] = {0, 0};
 
-    while(true){
+    // while(true){
 
 
         usleep(monitor->msToProduceETH * 1000);
@@ -63,10 +63,10 @@ void* ethereum_producer(void* arg) {
 
         report_request_added(request, monitor->produced, monitor->inRequestQueue);
 
-        if (monitor->produced[Bitcoin] + monitor->produced[Ethereum] == monitor->numOfTradeRequests){
-            break;
-        }
-    }
+    //     if (monitor->produced[Bitcoin] + monitor->produced[Ethereum] == monitor->numOfTradeRequests){
+    //         break;
+    //     }
+    // }
 
     pthread_exit(NULL);
 }

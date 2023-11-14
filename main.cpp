@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
         }
     }
 
-    sem_init(&monitorData.barrier_sem, 0, 0);
+    sem_init(&monitorData.barrierSem, 0, 0);
 
     pthread_t producers[2];
     pthread_t consumers[2];
