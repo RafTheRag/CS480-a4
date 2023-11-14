@@ -17,26 +17,27 @@ void* bitcoin_producer(void* arg) {
 
     RequestType request = Bitcoin;
 
-    unsigned int produced[RequestTypeN] = {0, 0};
+    
 
     while(true){
-        
-        
 
-        usleep(monitor->msToProduceBTC);
+        usleep(monitor->msToProduceBTC * 1000);
 
         monitor->insert(request);
     
 
-        produced[Bitcoin] += 1;
+        // produced[Bitcoin] += 1;
 
-        monitor->inRequestQueue[Bitcoin] += 1;
+        // monitor->inRequestQueue[Bitcoin] += 1;
 
-        report_request_added(request, produced, monitor->inRequestQueue);
+        
+        report_request_added(request, monitor->produced, monitor->inRequestQueue);
 
-        if (produced[Bitcoin] + produced[Ethereum] == monitor->numOfTradeRequests){
+        if (monitor->produced[Bitcoin] + monitor->produced[Ethereum] == monitor->numOfTradeRequests){
             break;
         }
+
+        
     }
 
    pthread_exit(NULL);
@@ -48,22 +49,21 @@ void* ethereum_producer(void* arg) {
 
     RequestType request = Ethereum;
 
-    unsigned int produced[RequestTypeN] = {0, 0};
+    // unsigned int produced[RequestTypeN] = {0, 0};
 
     while(true){
 
 
-        usleep(monitor->msToProduceETH);
+        usleep(monitor->msToProduceETH * 1000);
         
-        monitor->brokerQueue.push(request);
-        monitor->currentCount++;
+        monitor->insert(request);
 
-        produced[Ethereum] += 1;
-        monitor->inRequestQueue[Ethereum] += 1;
+        // produced[Ethereum] += 1;
+        // monitor->inRequestQueue[Ethereum] += 1;
 
-        report_request_added(request, produced, monitor->inRequestQueue);
+        report_request_added(request, monitor->produced, monitor->inRequestQueue);
 
-        if (produced[Bitcoin] + produced[Ethereum] == monitor->numOfTradeRequests){
+        if (monitor->produced[Bitcoin] + monitor->produced[Ethereum] == monitor->numOfTradeRequests){
             break;
         }
     }

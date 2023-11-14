@@ -4,18 +4,28 @@
 
 
 void ProducerConsumerMonitor::insert(RequestType type){
-    pthread_mutex_lock(&queueMutex);
-
     while (brokerQueue.size() == capacity) {
         pthread_cond_wait(&notFull, &queueMutex); 
     }
+
+    pthread_mutex_lock(&queueMutex);
+
+    
     brokerQueue.push(type);
-    pthread_cond_signal(&notEmpty);
+    produced[type] += 1;
+    inRequestQueue[type] +=1;
 
     pthread_mutex_unlock(&queueMutex);
+    
+
+    pthread_cond_signal(&notEmpty);
+
+    
 }
 
 RequestType ProducerConsumerMonitor::remove(){
+    
+    
     pthread_mutex_lock(&queueMutex);
 
         while (brokerQueue.empty()) {

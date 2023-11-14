@@ -16,6 +16,8 @@ class ProducerConsumerMonitor{
 
         unsigned int inRequestQueue[RequestTypeN] = {0, 0};
 
+        unsigned int produced[RequestTypeN] = {0, 0};
+
         
         
         unsigned int numOfTradeRequests = 120;
