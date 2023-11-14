@@ -12,22 +12,24 @@ void* blockchain_x_consumer(void* arg) {
 
 
     unsigned int consumed[RequestTypeN] = {0, 0};
+    
     // while(true){
-    //     usleep(monitor->msForX);
+        usleep(monitor->msForX);
+        RequestType coinType = monitor->brokerQueue.front();
+        RequestType currType = monitor->remove(coinType);
 
-    //     RequestType currType = monitor->remove();
-
-    //     if(currType == Bitcoin){
-    //         monitor->inRequestQueue[Bitcoin] -= 1;
-    //         consumed[Bitcoin] += 1;
-    //     } else {
-    //         monitor->inRequestQueue[Ethereum] -= 1;
-    //         consumed[Ethereum] += 1;
-    //     }    
+        if(currType == Bitcoin){
+            consumed[Bitcoin] += 1;
+        } else {
+            consumed[Ethereum] += 1;
+        }    
 
 
-    //     report_request_removed(BlockchainX, currType, consumed, monitor->inRequestQueue);
+        report_request_removed(BlockchainX, currType, consumed, monitor->inRequestQueue);
 
+    //     if (monitor->totalConsumed == monitor->numOfTradeRequests){
+    //         break;
+    //     }
     // }
     
     pthread_exit(NULL);
@@ -37,6 +39,28 @@ void* blockchain_y_consumer(void* arg) {
     // Blockchain Y consumer logic
     // ...
     ProducerConsumerMonitor *monitor = (ProducerConsumerMonitor*)arg;
+
+    unsigned int consumed[RequestTypeN] = {0, 0};
+
+    // while(true){
+        usleep(monitor->msForY);
+        RequestType coinType = monitor->brokerQueue.front();
+        RequestType currType = monitor->remove(coinType);
+
+        if(currType == Bitcoin){
+            consumed[Bitcoin] += 1;
+        } else {
+            consumed[Ethereum] += 1;
+        }    
+
+
+        report_request_removed(BlockchainY, currType, consumed, monitor->inRequestQueue);
+
+    //     if (monitor->totalConsumed == monitor->numOfTradeRequests){
+    //         break;
+    //     }
+    // }
+    
 
     pthread_exit(NULL);
 }

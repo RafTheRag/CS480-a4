@@ -18,6 +18,7 @@ class ProducerConsumerMonitor{
 
         unsigned int produced[RequestTypeN] = {0, 0};
 
+        int totalConsumed = 0;
         
         
         unsigned int numOfTradeRequests = 120;
@@ -29,7 +30,7 @@ class ProducerConsumerMonitor{
         unsigned int btcCount = 0;
 
         void insert(RequestType type);
-        RequestType remove();
+        RequestType remove(RequestType type);
 
 };
 

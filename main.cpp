@@ -40,19 +40,19 @@ int main(int argc, char** argv) {
                 break;
 
             case 'x':
-                monitorData.msForX = atoi(optarg);                
+                monitorData.msForX = atoi(optarg) * 1000;                
                 break;
 
             case 'y':
-                monitorData.msForY = atoi(optarg);
+                monitorData.msForY = atoi(optarg) * 1000;
                 break;
 
             case 'b':
-                monitorData.msToProduceBTC = atoi(optarg);
+                monitorData.msToProduceBTC = atoi(optarg) * 1000;
                 break;
 
             case 'e':
-                monitorData.msToProduceETH = atoi(optarg);
+                monitorData.msToProduceETH = atoi(optarg) * 1000;
                 break;
 
 

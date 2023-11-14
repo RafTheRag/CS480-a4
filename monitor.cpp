@@ -23,20 +23,23 @@ void ProducerConsumerMonitor::insert(RequestType type){
     
 }
 
-RequestType ProducerConsumerMonitor::remove(){
-    
+RequestType ProducerConsumerMonitor::remove(RequestType type){
+    while (brokerQueue.empty()) {
+            pthread_cond_wait(&notEmpty, &queueMutex);
+    }
     
     pthread_mutex_lock(&queueMutex);
 
-        while (brokerQueue.empty()) {
-            pthread_cond_wait(&notEmpty, &queueMutex);
-        }
-        RequestType item = brokerQueue.front();
-        brokerQueue.pop();
-        pthread_cond_signal(&notFull);
+        
+    RequestType item = brokerQueue.front();
+    brokerQueue.pop();
+    inRequestQueue[type] -= 1;
+    totalConsumed++;
        
-        pthread_mutex_unlock(&queueMutex);
-        return item;
+    pthread_mutex_unlock(&queueMutex);
+
+    pthread_cond_signal(&notFull);    
+    return item;
     
 
 
