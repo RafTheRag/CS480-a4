@@ -12,7 +12,7 @@ class ProducerConsumerMonitor{
         pthread_cond_t notEmpty;      // Condition variable for signaling unconsumed items
         pthread_cond_t notFull;   // Condition variable for signaling available slots
         int capacity = 15;
-        std::queue<int> brokerQueue;
+        std::queue<RequestType> brokerQueue;
         
         unsigned int numOfTradeRequests = 120;
         unsigned int msForX = 0;
@@ -23,7 +23,7 @@ class ProducerConsumerMonitor{
         unsigned int btcCount = 0;
 
         void insert(RequestType type);
-        void remove(RequestType type);
+        RequestType remove();
 
 };
 
