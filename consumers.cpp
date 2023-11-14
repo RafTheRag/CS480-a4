@@ -11,23 +11,27 @@ void* blockchain_x_consumer(void* arg) {
     ProducerConsumerMonitor *monitor = (ProducerConsumerMonitor*)arg;
     
     
-    RequestType currType = Bitcoin;
+    
 
-    unsigned int inRequestQueue[RequestTypeN] = {0, 0};;
+    
+    
 
     unsigned int consumed[RequestTypeN] = {0, 0};
     while(1){
+        usleep(monitor->msForX);
 
-    if(currType == Bitcoin){
-        inRequestQueue[Bitcoin] -= 1;
-        consumed[Bitcoin] += 1;
-    } else {
-        inRequestQueue[Ethereum] -= 1;
-        consumed[Ethereum] += 1;
-    }    
+        RequestType currType = monitor->remove();
+
+        if(currType == Bitcoin){
+            monitor->inRequestQueue[Bitcoin] -= 1;
+            consumed[Bitcoin] += 1;
+        } else {
+            monitor->inRequestQueue[Ethereum] -= 1;
+            consumed[Ethereum] += 1;
+        }    
 
 
-    report_request_removed(BlockchainX, currType, consumed, inRequestQueue);
+        report_request_removed(BlockchainX, currType, consumed, monitor->inRequestQueue);
 
     }
     

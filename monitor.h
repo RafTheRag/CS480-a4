@@ -13,6 +13,10 @@ class ProducerConsumerMonitor{
         pthread_cond_t notFull;   // Condition variable for signaling available slots
         int capacity = 15;
         std::queue<RequestType> brokerQueue;
+
+        unsigned int inRequestQueue[RequestTypeN] = {0, 0};
+
+        
         
         unsigned int numOfTradeRequests = 120;
         unsigned int msForX = 0;
