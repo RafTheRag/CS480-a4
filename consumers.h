@@ -15,8 +15,6 @@ struct ConsumerData{
     ProducerConsumerMonitor* broker;
 };
 
-extern unsigned int coinsConsumed;
-
 void* consumer(void* arg);
 
 

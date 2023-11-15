@@ -12,7 +12,7 @@ void* consumer(void* arg) {
     ConsumerData *data = (struct ConsumerData*)arg;
 
     
-    while(coinsConsumed < data->broker->numOfTradeRequests){
+    while(data->broker->coinsConsumed < data->broker->numOfTradeRequests){
 
         usleep(data->timeToConsume);
 
@@ -29,11 +29,11 @@ void* consumer(void* arg) {
         data->broker->inRequestQueue[coinRemoved]--;
 
         if(coinRemoved == Bitcoin){
-            producedBTC--;
-            //pthread_cond_signal(&data->broker->BTCNotFull);
+            data->broker->BTCCount--;
+            pthread_cond_signal(&data->broker->BTCNotFull);
         }
 
-        coinsConsumed++;
+        data->broker->coinsConsumed++;
 
         report_request_removed(data->type, coinRemoved, data->blockChainConsumed, data->broker->inRequestQueue);
 

@@ -21,6 +21,9 @@ class ProducerConsumerMonitor{
         
         
         unsigned int numOfTradeRequests = 120;
+        unsigned int coinsProduced = 0;
+        unsigned int BTCCount = 0;
+        unsigned int coinsConsumed = 0;
 
         void insert(RequestType type);
         RequestType remove(RequestType type);

@@ -10,9 +10,6 @@ struct ProducerData{
     ProducerConsumerMonitor* broker;
 };
 
-extern unsigned int coinsProduced;
-extern unsigned int producedBTC;
-
 // Function declaration for bitcoin producer thread
 void* producer(void* arg);
 

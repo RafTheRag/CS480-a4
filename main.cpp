@@ -36,9 +36,6 @@ int main(int argc, char** argv) {
     ETHData.broker = &monitorData;
     ETHData.type = Ethereum;
 
-    coinsProduced = 0;
-    producedBTC = 0;
-
     ProducerData coinProducers[RequestTypeN] = {BTCData, ETHData};
 
     ConsumerData blockChainXData;
@@ -49,8 +46,6 @@ int main(int argc, char** argv) {
 
     blockChainYData.broker = &monitorData;
     blockChainYData.type = BlockchainY;
-
-    coinsConsumed = 0;
 
     ConsumerData coinConsumers[ConsumerTypeN] = {blockChainXData, blockChainYData};
     
