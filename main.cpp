@@ -107,7 +107,18 @@ int main(int argc, char** argv) {
     pthread_join(consumers[BlockchainX], NULL);
     pthread_join(consumers[BlockchainY], NULL);
 
-    
+    blockChainXData.blockChainConsumed[Bitcoin] = monitorData.BTCConsumedByX;
+    blockChainXData.blockChainConsumed[Ethereum] = monitorData.ETHConsumedByX;
+
+    blockChainYData.blockChainConsumed[Bitcoin] = monitorData.BTCConsumedByY;
+    blockChainYData.blockChainConsumed[Ethereum] = monitorData.ETHConsumedByY;
+
+
+    unsigned int* consumedSummary[ConsumerTypeN] = {blockChainXData.blockChainConsumed, blockChainYData.blockChainConsumed};
+
+    //std::cout << &blockChainXData.blockChainConsumed[Bitcoin] << " : " << &blockChainXData.blockChainConsumed[Ethereum] << std::endl;
+
+    report_production_history(monitorData.produced, consumedSummary);
 
     exit(0);
 

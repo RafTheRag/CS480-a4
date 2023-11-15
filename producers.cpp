@@ -13,11 +13,13 @@ void* producer(void* arg) {
     ProducerData *data = (struct ProducerData*)arg;
 
 
-    while(data->broker->coinsProduced < data->broker->numOfTradeRequests){
+    while(data->broker->coinsProduced < data->broker->numOfTradeRequests - 1){
 
         usleep(data->timeToProduce);
 
         pthread_mutex_lock(&data->broker->queueMutex);
+
+        data->broker->coinsProduced++;
 
         while (data->broker->brokerQueue.size() == data->broker->capacity) {
             pthread_cond_wait(&data->broker->notFull, &data->broker->queueMutex); 
@@ -33,8 +35,6 @@ void* producer(void* arg) {
         data->broker->brokerQueue.push(data->type);
         data->broker->produced[data->type]++;
         data->broker->inRequestQueue[data->type]++;
-        
-        data->broker->coinsProduced++;
         
         report_request_added(data->type, data->broker->produced, data->broker->inRequestQueue);
 

@@ -12,7 +12,7 @@ void* consumer(void* arg) {
     ConsumerData *data = (struct ConsumerData*)arg;
 
     
-    while(data->broker->coinsConsumed < data->broker->numOfTradeRequests){
+    while(data->broker->coinsConsumed < data->broker->numOfTradeRequests - 1){
 
         usleep(data->timeToConsume);
 
@@ -41,8 +41,14 @@ void* consumer(void* arg) {
 
         pthread_cond_signal(&data->broker->notFull);
 
-        
+    }
 
+    if(data->type == BlockchainX){
+        data->broker->BTCConsumedByX = data->blockChainConsumed[Bitcoin];
+        data->broker->ETHConsumedByX = data->blockChainConsumed[Ethereum];
+    }else{
+        data->broker->BTCConsumedByY = data->blockChainConsumed[Bitcoin];
+        data->broker->ETHConsumedByY = data->blockChainConsumed[Ethereum];
     }
     
     pthread_exit(NULL);

@@ -16,17 +16,18 @@ class ProducerConsumerMonitor{
         std::queue<RequestType> brokerQueue;
 
         unsigned int inRequestQueue[RequestTypeN] = {0, 0};
-
         unsigned int produced[RequestTypeN] = {0, 0};
-        
         
         unsigned int numOfTradeRequests = 120;
         unsigned int coinsProduced = 0;
         unsigned int BTCCount = 0;
         unsigned int coinsConsumed = 0;
 
-        void insert(RequestType type);
-        RequestType remove(RequestType type);
+        unsigned int BTCConsumedByX = 0;
+        unsigned int BTCConsumedByY = 0;
+
+        unsigned int ETHConsumedByX = 0;
+        unsigned int ETHConsumedByY = 0;
 
 };
 
