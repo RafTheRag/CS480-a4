@@ -17,10 +17,6 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-    //checks if there is valid amount of mandatory arguements in the command line
-    if (argc < 3) {
-        throw invalid_argument("Invalid num of arguements");
-    }
     
     int option = 0;
     
