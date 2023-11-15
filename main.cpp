@@ -25,6 +25,34 @@ int main(int argc, char** argv) {
     int option = 0;
     
     ProducerConsumerMonitor monitorData;
+
+
+    ProducerData BTCData;
+    ProducerData ETHData;
+
+    BTCData.broker = &monitorData;
+    BTCData.type = Bitcoin;
+
+    ETHData.broker = &monitorData;
+    ETHData.type = Ethereum;
+
+    coinsProduced = 0;
+    producedBTC = 0;
+
+    ProducerData coinProducers[RequestTypeN] = {BTCData, ETHData};
+
+    ConsumerData blockChainXData;
+    ConsumerData blockChainYData;
+
+    blockChainXData.broker = &monitorData;
+    blockChainXData.type = BlockchainX;
+
+    blockChainYData.broker = &monitorData;
+    blockChainYData.type = BlockchainY;
+
+    coinsConsumed = 0;
+
+    ConsumerData coinConsumers[ConsumerTypeN] = {blockChainXData, blockChainYData};
     
 
     while ((option = getopt(argc, argv, "n:x:y:b:e:")) != -1) {
@@ -40,19 +68,19 @@ int main(int argc, char** argv) {
                 break;
 
             case 'x':
-                monitorData.msForX = atoi(optarg) * 1000;                
+                coinConsumers[BlockchainX].timeToConsume = atoi(optarg) * 1000;                
                 break;
 
             case 'y':
-                monitorData.msForY = atoi(optarg) * 1000;
+                coinConsumers[BlockchainY].timeToConsume = atoi(optarg) * 1000;
                 break;
 
             case 'b':
-                monitorData.msToProduceBTC = atoi(optarg) * 1000;
+                coinProducers[Bitcoin].timeToProduce = atoi(optarg) * 1000;
                 break;
 
             case 'e':
-                monitorData.msToProduceETH = atoi(optarg) * 1000;
+                coinProducers[Ethereum].timeToProduce = atoi(optarg) * 1000;
                 break;
 
 
@@ -64,25 +92,27 @@ int main(int argc, char** argv) {
 
     sem_init(&monitorData.barrierSem, 0, 0);
 
-    pthread_t producers[2];
-    pthread_t consumers[2];
+    pthread_t producers[RequestTypeN];
+    pthread_t consumers[ConsumerTypeN];
     pthread_mutex_init(&monitorData.queueMutex, NULL);
     pthread_cond_init(&monitorData.notEmpty, NULL);
     pthread_cond_init(&monitorData.notFull, NULL);
+    pthread_cond_init(&monitorData.BTCNotFull, NULL);
 
-    pthread_create(&producers[0], NULL, &bitcoin_producer, (void*)&monitorData);
-    pthread_create(&producers[1], NULL, &ethereum_producer, (void*)&monitorData);
-    pthread_create(&consumers[0], NULL, &blockchain_x_consumer, (void*)&monitorData);
-    pthread_create(&consumers[1], NULL, &blockchain_y_consumer, (void*)&monitorData);
+    pthread_create(&producers[Bitcoin], NULL, &producer, (void*)&coinProducers[Bitcoin]);
+    pthread_create(&producers[Ethereum], NULL, &producer, (void*)&coinProducers[Ethereum]);
+    pthread_create(&consumers[BlockchainX], NULL, &consumer, (void*)&coinConsumers[BlockchainX]);
+    pthread_create(&consumers[BlockchainY], NULL, &consumer, (void*)&coinConsumers[BlockchainY]);
 
     // Wait for producer threads to finish
-    pthread_join(producers[0], NULL);
-    pthread_join(producers[1], NULL);
+    pthread_join(producers[Bitcoin], NULL);
+    pthread_join(producers[Ethereum], NULL);
 
     // Wait for consumer threads to finish
-    pthread_join(consumers[0], NULL);
-    pthread_join(consumers[1], NULL);
+    pthread_join(consumers[BlockchainX], NULL);
+    pthread_join(consumers[BlockchainY], NULL);
 
+    
 
     exit(0);
 

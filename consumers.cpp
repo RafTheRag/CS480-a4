@@ -3,58 +3,47 @@
 #include <unistd.h>
 #include "tradecrypto.h"
 #include "consumers.h"
-#include "monitor.h"
+#include "report.h"
+#include <iostream>
+#include "producers.h"
 
-void* blockchain_x_consumer(void* arg) {
-    // Blockchain X consumer logic
-    // ...
-    ProducerConsumerMonitor *monitor = (ProducerConsumerMonitor*)arg;
+void* consumer(void* arg) {
 
+    ConsumerData *data = (struct ConsumerData*)arg;
 
-    unsigned int consumed[RequestTypeN] = {0, 0};
     
-    while(monitor->totalConsumed < monitor->numOfTradeRequests){
-        usleep(monitor->msForX);
-        RequestType coinType = monitor->brokerQueue.front();
-        RequestType currType = monitor->remove(coinType);
+    while(coinsConsumed < data->broker->numOfTradeRequests){
 
-        if(currType == Bitcoin){
-            consumed[Bitcoin] += 1;
-        } else {
-            consumed[Ethereum] += 1;
-        }    
+        usleep(data->timeToConsume);
 
+        pthread_mutex_lock(&data->broker->queueMutex);
 
-        report_request_removed(BlockchainX, currType, consumed, monitor->inRequestQueue);
+        while (data->broker->brokerQueue.empty()) {
+            pthread_cond_wait(&data->broker->notEmpty, &data->broker->queueMutex);
+        }
+
+        RequestType coinRemoved = data->broker->brokerQueue.front();
+        data->broker->brokerQueue.pop();
+
+        data->blockChainConsumed[coinRemoved]++;
+        data->broker->inRequestQueue[coinRemoved]--;
+
+        if(coinRemoved == Bitcoin){
+            producedBTC--;
+            //pthread_cond_signal(&data->broker->BTCNotFull);
+        }
+
+        coinsConsumed++;
+
+        report_request_removed(data->type, coinRemoved, data->blockChainConsumed, data->broker->inRequestQueue);
+
+        pthread_mutex_unlock(&data->broker->queueMutex);
+
+        pthread_cond_signal(&data->broker->notFull);
+
+        
 
     }
     
-    pthread_exit(NULL);
-}
-
-void* blockchain_y_consumer(void* arg) {
-    // Blockchain Y consumer logic
-    // ...
-    ProducerConsumerMonitor *monitor = (ProducerConsumerMonitor*)arg;
-
-    unsigned int consumed[RequestTypeN] = {0, 0};
-
-    while(monitor->totalConsumed < monitor->numOfTradeRequests){
-        usleep(monitor->msForY);
-        RequestType coinType = monitor->brokerQueue.front();
-        RequestType currType = monitor->remove(coinType);
-
-        if(currType == Bitcoin){
-            consumed[Bitcoin] += 1;
-        } else {
-            consumed[Ethereum] += 1;
-        }    
-
-
-        report_request_removed(BlockchainY, currType, consumed, monitor->inRequestQueue);
-
-    }
-    
-
     pthread_exit(NULL);
 }

@@ -4,57 +4,45 @@
 #include <unistd.h>
 #include "tradecrypto.h"
 #include "producers.h"
-#include "monitor.h"
 #include "report.h"
+#include <iostream>
 
 
+void* producer(void* arg) {
 
-void* bitcoin_producer(void* arg) {
+    ProducerData *data = (struct ProducerData*)arg;
 
-    
 
-    ProducerConsumerMonitor *monitor = (ProducerConsumerMonitor*)arg;
+    while(coinsProduced < data->broker->numOfTradeRequests){
 
-    RequestType request = Bitcoin;
+        usleep(data->timeToProduce);
 
-    
+        pthread_mutex_lock(&data->broker->queueMutex);
 
-    while(monitor->totalProduced < monitor->numOfTradeRequests){
-
-        usleep(monitor->msToProduceBTC);
-
-        while(monitor->btcCount > 5){
-            
+        while (data->broker->brokerQueue.size() == data->broker->capacity) {
+            pthread_cond_wait(&data->broker->notFull, &data->broker->queueMutex); 
+        }
+        
+        if(data->type == Bitcoin){
+            while(producedBTC > 5){
+                //pthread_cond_wait(&data->broker->BTCNotFull, &data->broker->queueMutex);
+            }
+            producedBTC++;
         }
 
-        monitor->insert(request);
+        data->broker->brokerQueue.push(data->type);
+        data->broker->produced[data->type]++;
+        data->broker->inRequestQueue[data->type]++;
         
-        report_request_added(request, monitor->produced, monitor->inRequestQueue);
+        coinsProduced++;
+        
+        report_request_added(data->type, data->broker->produced, data->broker->inRequestQueue);
+
+        pthread_mutex_unlock(&data->broker->queueMutex);
+
+        pthread_cond_signal(&data->broker->notEmpty);
         
     }
 
    pthread_exit(NULL);
-}
-
-void* ethereum_producer(void* arg) {
-    
-    ProducerConsumerMonitor *monitor = (ProducerConsumerMonitor*)arg;
-
-    RequestType request = Ethereum;
-
-    // unsigned int produced[RequestTypeN] = {0, 0};
-
-    while(monitor->totalProduced < monitor->numOfTradeRequests){
-
-
-        usleep(monitor->msToProduceETH);
-        
-        monitor->insert(request);
-
-
-        report_request_added(request, monitor->produced, monitor->inRequestQueue);
-
-    }
-
-    pthread_exit(NULL);
 }

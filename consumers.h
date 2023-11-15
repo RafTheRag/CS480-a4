@@ -5,12 +5,19 @@
 #ifndef CONSUMERS_H
 #define CONSUMERS_H
 #include <pthread.h>
-#include "report.h"
+#include "tradecrypto.h"
+#include "monitor.h"
 
+struct ConsumerData{
+    unsigned int timeToConsume = 0;
+    unsigned int blockChainConsumed[RequestTypeN] = {0, 0};
+    ConsumerType type;
+    ProducerConsumerMonitor* broker;
+};
 
-void* blockchain_x_consumer(void* arg);
+extern unsigned int coinsConsumed;
 
-void* blockchain_y_consumer(void* arg);
+void* consumer(void* arg);
 
 
 #endif // CONSUMERS_H

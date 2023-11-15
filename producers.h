@@ -1,12 +1,21 @@
 #ifndef PRODUCERS_H
 #define PRODUCERS_H
 
+#include "tradecrypto.h"
+#include "monitor.h"
+
+struct ProducerData{
+    unsigned int timeToProduce = 0;
+    RequestType type;
+    ProducerConsumerMonitor* broker;
+};
+
+extern unsigned int coinsProduced;
+extern unsigned int producedBTC;
 
 // Function declaration for bitcoin producer thread
-void* bitcoin_producer(void* arg);
+void* producer(void* arg);
 
-// // Function declaration for ethereum producer thread
-void* ethereum_producer(void* arg);
 
 
 
